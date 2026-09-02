@@ -1,0 +1,35 @@
+service:
+  name: ceres-ppch
+
+server:
+  port: 8080
+  authentication:
+    secret: replace-with-a-long-random-secret
+
+database:
+  type: sqlite
+  path: ./local/database.sqlite
+
+logging:
+  output: info
+  events: true
+
+components:
+  - name: ppch
+    class: ceres_ppch.PPCHDriver
+    arguments:
+      poll-interval: 5s
+      response-timeout: 3s
+      maximum-pressure-psi: 5700
+      connection:
+        source:
+          class: ceres_ppch.SerialSource
+          arguments:
+            # Windows example: COM4. Linux example: /dev/ttyUSB0.
+            port: COM4
+            baudrate: 2400
+            bytesize: 7
+            parity: E
+            stopbits: 1
+            read-timeout: 0.25
+            write-timeout: 2

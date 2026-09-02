@@ -1,0 +1,30 @@
+[project]
+name = "ceres-ppch"
+version = "0.1.0"
+description = "CERES driver for Fluke/DHI PPCH pressure controllers over RS-232"
+readme = "README.md"
+requires-python = ">=3.13"
+license = { text = "MIT" }
+authors = [{ name = "Dana Manalang" }]
+dependencies = [
+  "ceres-engine>=0.47,<0.48",
+  "pyserial>=3.5,<4",
+]
+
+[project.optional-dependencies]
+test = ["pytest>=8.3", "pytest-asyncio>=0.25", "ruff>=0.11"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["ceres_ppch"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+asyncio_mode = "auto"
+
+[tool.ruff]
+line-length = 100
+target-version = "py313"

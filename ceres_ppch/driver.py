@@ -105,7 +105,7 @@ class PPCHDriver(Component):
     async def parse_poll(self, message: Message) -> PPCHParticle | None:
         try:
             particle = PPCHParticle.from_message(message)
-        except (ParseFailed, PPCHProtocolError):
+        except ParseFailed, PPCHProtocolError:
             return None
         self._latest = particle.data
         self._unit = particle.data.pressure_unit.upper()
@@ -116,7 +116,7 @@ class PPCHDriver(Component):
         while True:
             try:
                 await self._command("QPRR")
-            except (RuntimeError, TimeoutError, PPCHProtocolError) as exception:
+            except RuntimeError, TimeoutError, PPCHProtocolError as exception:
                 self.system.log.warning(f"PPCH poll failed: {exception}")
                 self.system.alerts.emit(
                     Level.WARNING,

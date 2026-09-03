@@ -74,3 +74,20 @@ by `ceres-ppch`. An absent, older, or newer system-wide CERES installation is ig
 the installer recreates that environment and upgrades the driver while preserving configuration
 and the SQLite database.
 
+## CERES interpreter selection
+
+The generated launchers start CERES through the installer-managed Python interpreter and set
+`CERES_PYTHON` explicitly. This is required on Windows because the native CERES launcher may
+not automatically find `python.exe` beside `ceres.exe`.
+
+If an installation made with v0.3.0 reports `No Python interpreter found for the Ceres runtime`,
+rerun the current installer. It preserves the existing configuration and database while replacing
+the launcher. As an immediate PowerShell workaround, run:
+
+```powershell
+$InstallDir = Join-Path $env:LOCALAPPDATA "CeresPPCH"
+$env:CERES_PYTHON = Join-Path $InstallDir "venv\Scripts\python.exe"
+$env:VIRTUAL_ENV = Join-Path $InstallDir "venv"
+Set-Location $InstallDir
+& $env:CERES_PYTHON -m ceres run all
+```

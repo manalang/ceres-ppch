@@ -31,7 +31,7 @@ not accepted for safety validation.
 
 ## Install
 
-Python 3.13 or newer and a working CERES installation are required.
+Python 3.14 or newer and a working CERES installation are required.
 
 ```sh
 git clone https://github.com/manalang/ceres-ppch.git

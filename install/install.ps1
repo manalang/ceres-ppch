@@ -67,7 +67,6 @@ if ($LASTEXITCODE -ne 0) { throw "Python 3.14 installation failed." }
 & $UvExe venv --python 3.14 --clear $VenvDir
 if ($LASTEXITCODE -ne 0) { throw "Virtual environment creation failed." }
 $PythonExe = Join-Path $VenvDir "Scripts\python.exe"
-$CeresExe = Join-Path $VenvDir "Scripts\ceres.exe"
 
 Write-Host "Installing the current CERES PPCH driver and compatible CERES version..."
 & $UvExe pip install --python $PythonExe --upgrade $RepositoryArchive
@@ -157,7 +156,9 @@ $Connection
 
 $StartScript = @"
 Set-Location $(Quote-Yaml $InstallDir)
-& $(Quote-Yaml $CeresExe) run all
+`$env:CERES_PYTHON = $(Quote-Yaml $PythonExe)
+`$env:VIRTUAL_ENV = $(Quote-Yaml $VenvDir)
+& $(Quote-Yaml $PythonExe) -m ceres run all
 "@
 [System.IO.File]::WriteAllText(
     (Join-Path $InstallDir "Start-CeresPPCH.ps1"),
@@ -183,4 +184,3 @@ Write-Host "Configuration: $ConfigFile"
 Write-Host "Start CERES PPCH: $InstallDir\Start-CeresPPCH.cmd"
 Write-Host "Update later:       $InstallDir\Update-CeresPPCH.ps1"
 Write-Host "Web console:        http://localhost:8080"
-

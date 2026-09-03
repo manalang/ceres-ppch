@@ -33,6 +33,11 @@ not accepted for safety validation.
 
 Python 3.14 or newer and a working CERES installation are required.
 
+For the easiest installation on Windows, macOS, or Linux, including computers with no CERES
+installation or an older incompatible version—use the [guided installers](install/README.md).
+They install an isolated Python and CERES environment without changing a system-wide CERES
+installation.
+
 ```sh
 git clone https://github.com/manalang/ceres-ppch.git
 cd ceres-ppch

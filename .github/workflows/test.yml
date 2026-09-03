@@ -16,3 +16,25 @@ jobs:
       - run: pytest
       - run: ruff check .
       - run: ruff format --check .
+
+  installer-syntax:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, macos-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - name: Validate shell installer
+        if: runner.os != 'Windows'
+        run: sh -n install/install.sh
+      - name: Validate PowerShell installer
+        if: runner.os == 'Windows'
+        shell: pwsh
+        run: |
+          $errors = $null
+          [void][System.Management.Automation.Language.Parser]::ParseFile(
+            (Resolve-Path install/install.ps1),
+            [ref]$null,
+            [ref]$errors
+          )
+          if ($errors.Count) { $errors | ForEach-Object { Write-Error $_ }; exit 1 }

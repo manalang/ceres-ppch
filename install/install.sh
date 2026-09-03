@@ -73,7 +73,6 @@ say "Installing an isolated Python 3.14 runtime..."
 "$UV_BIN" python install 3.14
 "$UV_BIN" venv --python 3.14 --clear "$VENV_DIR"
 PYTHON_BIN="${VENV_DIR}/bin/python"
-CERES_BIN="${VENV_DIR}/bin/ceres"
 
 say "Installing the current CERES PPCH driver and compatible CERES version..."
 "$UV_BIN" pip install --python "$PYTHON_BIN" --upgrade "$REPOSITORY_ARCHIVE"
@@ -181,7 +180,9 @@ cat >"${INSTALL_DIR}/start.sh" <<EOF
 #!/bin/sh
 set -eu
 cd $(quote_yaml "$INSTALL_DIR")
-exec $(quote_yaml "$CERES_BIN") run all
+export CERES_PYTHON=$(quote_yaml "$PYTHON_BIN")
+export VIRTUAL_ENV=$(quote_yaml "$VENV_DIR")
+exec $(quote_yaml "$PYTHON_BIN") -m ceres run all
 EOF
 chmod +x "${INSTALL_DIR}/start.sh"
 
@@ -198,4 +199,3 @@ say "Configuration: ${CONFIG_FILE}"
 say "Start CERES PPCH: ${INSTALL_DIR}/start.sh"
 say "Update later:       ${INSTALL_DIR}/update.sh"
 say "Web console:        http://localhost:8080"
-

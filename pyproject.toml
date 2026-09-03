@@ -3,7 +3,7 @@ name = "ceres-ppch"
 version = "0.2.0"
 description = "CERES driver for Fluke/DHI PPCH pressure controllers over RS-232"
 readme = "README.md"
-requires-python = ">=3.13"
+requires-python = ">=3.14"
 license = { text = "MIT" }
 authors = [{ name = "Dana Manalang" }]
 dependencies = [
@@ -27,4 +27,4 @@ asyncio_mode = "auto"
 
 [tool.ruff]
 line-length = 100
-target-version = "py313"
+target-version = "py314"

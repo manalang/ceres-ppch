@@ -1,0 +1,35 @@
+service:
+  name: ceres-ppch
+
+server:
+  port: 8080
+  authentication:
+    secret: replace-with-a-long-random-secret
+
+database:
+  type: sqlite
+  path: ./local/database.sqlite
+
+logging:
+  output: info
+  events: true
+
+components:
+  - name: ppch
+    class: ceres_ppch.PPCHDriver
+    arguments:
+      poll-interval: 5s
+      response-timeout: 3s
+      maximum-pressure-psi: 5700
+      connection:
+        source:
+          # Use a raw TCP socket provided by the serial-port server.
+          class: ceres.connection.TCPSource
+          arguments:
+            host: 192.168.1.50
+            port: 4001
+        reconnect-schedule:
+          type: interval
+          interval: 2s
+          multiplier: 2
+          max: 1m

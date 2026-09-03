@@ -1,12 +1,14 @@
 # CERES PPCH Driver
 
 A CERES driver for monitoring and controlling a Fluke/DHI PPCH pressure controller through
-the COM1 RS-232 interface. The initial hardware target is a PPCH SI A40M with a site safety
-limit of 5,700 psi.
+its COM1 RS-232 interface. CERES can connect directly to a computer serial port or to a raw
+TCP port exposed by a serial-port server. The initial hardware target is a PPCH SI A40M with
+a site safety limit of 5,700 psi.
 
 ## Features
 
-- Native configurable serial transport for Windows, Linux, and macOS.
+- Direct configurable serial transport for Windows, Linux, and macOS.
+- Raw TCP transport for Ethernet serial-port servers.
 - Configurable polling from 1 second through 10 minutes; default 5 seconds.
 - `QPRR` polling records ready state, pressure, pressure rate, measurement mode, and
   atmospheric pressure as structured CERES particles.
@@ -46,7 +48,24 @@ python -m pip install -e .
 On Linux, ensure the service account can open the serial device (often by joining the
 `dialout` group). Do not run CERES as root solely to access a serial port.
 
-## Configure
+## Connection requirements
+
+The driver supports two interchangeable connection sources:
+
+| Deployment | CERES source | Required settings |
+| --- | --- | --- |
+| Direct RS-232 or USB adapter | `ceres_ppch.SerialSource` | Port and serial formatting |
+| Ethernet serial-port server | `ceres.connection.TCPSource` | Hostname/IP address and TCP port |
+
+The serial-port server must operate as a transparent raw TCP socket. Telnet option negotiation,
+RFC 2217 control traffic, command prompts, packet headers, timestamps, and other framing must be
+disabled. Configure the server-side serial channel to match the PPCH COM1 settings. The PPCH
+does not use hardware flow control.
+
+Only one TCP client may control a PPCH connection. Disable competing management software or
+additional serial-server clients so replies cannot be consumed by another session.
+
+## Configure a direct serial connection
 
 Copy the example and edit the port name and authentication secret:
 
@@ -63,6 +82,27 @@ Typical port names:
 The example uses the documented PPCH COM1 default `2400,E,7,1`. Match these values to the
 actual front-panel COM1 configuration. Hardware flow control is disabled because the PPCH does
 not support or require it.
+
+## Configure a TCP serial-server connection
+
+Copy the TCP example and set the serial server's address, raw TCP port, and authentication
+secret:
+
+```sh
+cp ceres-tcp.yaml.example ceres.yaml
+```
+
+```yaml
+connection:
+  source:
+    class: ceres.connection.TCPSource
+    arguments:
+      host: 192.168.1.50
+      port: 4001
+```
+
+Serial formatting is configured on the serial-port server rather than in this CERES TCP source.
+The example enables exponential reconnect backoff from 2 seconds to 1 minute.
 
 `poll-interval` accepts any duration from `1s` to `10m`.
 

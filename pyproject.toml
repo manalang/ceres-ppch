@@ -1,6 +1,6 @@
 [project]
 name = "ceres-ppch"
-version = "0.3.0"
+version = "0.3.1"
 description = "CERES driver for Fluke/DHI PPCH controllers over serial or raw TCP"
 readme = "README.md"
 requires-python = ">=3.14"

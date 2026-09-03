@@ -53,7 +53,7 @@ class SerialSource(Source):
                 rtscts=False,
                 dsrdtr=False,
             )
-        except (OSError, serial.SerialException):
+        except OSError, serial.SerialException:
             self._serial = None
             return False
         return True
@@ -66,11 +66,11 @@ class SerialSource(Source):
             return
         try:
             port.cancel_read()
-        except (AttributeError, OSError, serial.SerialException):
+        except AttributeError, OSError, serial.SerialException:
             pass
         try:
             await asyncio.to_thread(port.close)
-        except (OSError, serial.SerialException):
+        except OSError, serial.SerialException:
             pass
 
     @override
@@ -81,7 +81,7 @@ class SerialSource(Source):
         try:
             written = await asyncio.to_thread(port.write, data)
             await asyncio.to_thread(port.flush)
-        except (OSError, serial.SerialException, serial.SerialTimeoutException):
+        except OSError, serial.SerialException, serial.SerialTimeoutException:
             return None
         return data if written == len(data) else None
 
@@ -95,7 +95,7 @@ class SerialSource(Source):
                 return None
             try:
                 data = await asyncio.to_thread(port.read, count)
-            except (OSError, serial.SerialException):
+            except OSError, serial.SerialException:
                 return None
             if data:
                 return data

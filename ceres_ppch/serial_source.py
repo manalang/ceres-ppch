@@ -6,10 +6,10 @@ import asyncio
 from dataclasses import field
 from typing import Literal, override
 
+import serial
 from ceres.connection import Source
 from ceres.data import NonBlankStr
 from pydantic import Field as PydanticField
-import serial
 
 
 class SerialSource(Source):
